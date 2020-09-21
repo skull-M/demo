@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+
+{% block title %}
+    <title>鱼书</title>
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet"
+          href="{% static '3rd/ui/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="shortcut icon"
+          href="{% static 'images/icon.png' %}">
+{% endblock %}
+{% block mycss %}
+
+{% endblock %}
+<body>
+{% block navbar %}
+    <div class="nav-self">
+        <div style="padding-top: inherit" class="container">
+{#            <form class="form-inline" action="{{ url_for('web.search') }}" method="get">#}
+            <form class="form-inline" action="{% url 'book:findbook' %}" method="get">
+                <div class="flex-vertical-center-height">
+                    <div class="col-md-2">
+                        <img src="{% static 'images/logo-yushu.png' %}"/>
+                    </div>
+                    <div style="margin-left:30px;" class="col-md-8 input-group">
+                        <input name="q" type="text" placeholder="ISBN、图书名称"
+                               class="form-control input-sm">
+                        <span class="input-group-btn">
+                            <input class="btn btn-search" type="submit" value="搜索"/>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="sub-nav flex-vertical-center">
+        <div class="container">
+            <div class="row">
+                {# 后加的主页面 #}
+                <div class="col-md-2">
+{#                    <a id="wishes" href="{{ url_for('web.my_wish') }}"#}
+                    <a id="wishes" href="{% url 'user:index' %}?uid={{ request.user.id }}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/icon.png'%}"/>
+                        <span>大海</span>
+                    </a>
+                </div>
+
+                <div class="col-md-2 col-md-offset-1">
+{#                    <a id="recent" href="{{ url_for('web.index') }}"#}
+                      <a id="recent" href="{% url 'book:mybooklist'%}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/upload.png' %}"/>
+                        <span>最近上传</span>
+                    </a>
+                </div>
+                <div class="col-md-2">
+{#                    <a id="gifts" href="{{ url_for('web.my_gifts') }}"#}
+                    <a id="gifts" href="{% url 'book:sendbooklist'%}?uid={{ request.user.id }}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/gift.png'%}"/>
+                        <span>赠送清单</span>
+                    </a>
+                </div>
+                <div class="col-md-2">
+{#                    <a id="wishes" href="{{ url_for('web.my_wish') }}"#}
+                    <a id="wishes" href="{% url 'book:getbooklist' %}?uid={{ request.user.id }}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/wish.png'%}"/>
+                        <span>心愿清单</span>
+                    </a>
+                </div>
+                <div class="col-md-2">
+{#                    <a id="pending" href="{{ url_for('web.pending') }}"#}
+                    <a id="pending" href="{% url 'book:seedrift' %}?uid={{ request.user.id }}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/fish.png' %}"/>
+                        <span>鱼漂</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-height flex-vertical-center float-menu">
+        {% if not request.user.is_authenticated %}
+            <div style="float:right">
+{#                <a href="{{ url_for('web.login') }}">登录</a>#}
+                <a href="{% url 'user:login' %}">登录</a>
+{#                <a style="margin-left: 40px;" href="{{ url_for('web.register') }}">注册</a>#}
+                <a style="margin-left: 40px;" href="{% url 'user:register' %}">注册</a>
+            </div>
+        {% else %}
+{#            <a href="{{ url_for('web.personal_center') }}">{{ current_user.nickname }}的鱼书</a>#}
+{#            <a style="margin-left: 40px;" href="{{ url_for('web.logout') }}">注销</a>#}
+              <a href="{% url 'user:personal' %}">{{ request.user.nickname }}的鱼书</a>
+              <a style="margin-left: 40px;" href="javascript:void(0);" id="logout">注销</a>
+        {% endif %}
+    </div>
+{% endblock %}
+<div class='container'>
+    <div class="row">
+{#        {% with messages = get_flashed_messages() %}#}
+{#            {% with messages = get_flashed_messages %}#}
+            {% for message in messages %}
+                {% if message %}
+                    <div class="alert alert-warning" role="alert">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+{#        {% endwith %}#}
+        {% if form and form.errors %}
+{#            {% for key, error in form.errors.items() %}#}
+            {% for key, error in form.errors.items %}
+                <div class="alert alert-warning" role="alert">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% block content %} {% endblock %}
+</div>
+<div id="footer" class="flex-hor-center">
+    <span>© 2017-2020 yushu.im created by 七月</span>
+</div>
+</body>
+
+{% block scripts %}
+    <script src="{% static '3rd/jquery-3.2.1.min.js'%}"></script>
+    <script src="{% static '3rd/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+{#    <script>#}
+{#        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};#}
+{#    </script>#}
+    <script>
+        $('#logout').click(function () {
+            result = confirm('确认要退出当前鱼书用户吗')
+            if (result){
+                location.href='{% url 'user:logout' %}'
+            }else {
+
+            }
+        })
+
+
+    </script>
+{% endblock %}
+{% block myjs %}
+
+{% endblock %}
+</html>

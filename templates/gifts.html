@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% block mycss %}
+{#{% block head %}#}
+{#    {{ super() }}#}
+{#   <link rel="stylesheet" href="{{ url_for('static', filename='css/gifts.css')}}">#}
+   <link rel="stylesheet" href="{% static 'css/gifts.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="row module-title shadow-bottom">
+        <div class="col-md-2">
+            <span class='description-title'>最近上传</span>
+        </div>
+        <hr/>
+    </div>
+    <div class="row">
+        {% for book in recent %}
+{#            <a href="{{ url_for('web.bool_detail', isbn=book.isbn) }}" class="">#}
+            <a href="{% url 'user:seebook' %}?bid={{ book.id }}&uid={{ user.id }}" class="">
+                <div class="col-md-5 col-padding">
+                    <div class="col-md-8">
+                        <img class="book-img-base" src="{{ MEDIA_URL }}{{ book.image }}">
+                    </div>
+                    <div class="col-md-9 flex-vertical">
+                            <span id="title"
+                                  style="font-size: 16px;margin-bottom: 15px">{{ book.bookname }}</span>
+                        <span id="author">{{ book.author }}</span>
+                        <span id="publisher">{{ book.publisher }}</span>
+                        <span id="price">{{ book.price }}</span>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_object.has_previous %}
+                <li>
+                    <a href="?page={{ page_object.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page_index in paginator.page_range %}
+
+                {% if page_index == page %}
+                     <li class="active"><a href="#">{{ page_index }}</a></li>
+                {% else %}
+                    <li><a href="?page={{ page_index }}">{{ page_index }}</a></li>
+                {% endif %}
+
+            {% endfor %}
+            {% if page_object.has_next %}
+                <li>
+                    <a href="?page={{ page_object.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+{% endblock %}

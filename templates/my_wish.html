@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+{% block myjs %}
+{#    {{ super() }}#}
+{% endblock %}
+{% block content %}
+{#    {{ super() }}#}
+    <div class="row flex-vertical-center">
+        <div style="margin-top:20px;" class="col-md-6">
+            <span class="sub-title">我想要的书籍  共  {{ wishes.count }} 本</span>
+            <hr>
+        </div>
+    </div>
+    {% for wish in recent %}
+        <div class="row">
+{#            <a href="{{ url_for('web.book_detail', isbn=wish.book.isbn) }}" class="">#}
+            <a href="{% url 'user:seebook' %}?bid={{ wish.bidw_id }}&uid={{ user.id }}" class="">
+                <div style="margin-bottom:30px;" class="col-md-9 col-padding">
+                    <div class="col-md-2">
+                        <img class="book-img-small shadow" src="{{ MEDIA_URL }}{{ wish.bidw.image }}">
+                    </div>
+                    <div style="margin-top:6px;" class="col-md-6 flex-vertical">
+                            <span id="title"
+                                  class="book-middle-title">{{ wish.bidw.title }}</span>
+                        <div style="margin-top:6px;"
+                             class="flex-vertical description-font">
+                            <span id="author">{{ wish.bidw.author }}</span>
+                            <span id="publisher">{{ wish.bidw.publisher }}</span>
+                            <span id="price">{{ wish.bidw.price }}</span>
+                            <span id="isbn">{{ wish.bidw.isbn }}</span>
+                        </div>
+                        <a class="link-normal"
+                           href="{%  url 'book:delgetbook' %}?bid={{ wish.bidw_id }}&uid={{ user.id }}">
+{#                           href="{{ url_for('web.redraw_from_wish', isbn=wish.book.isbn) }}">#}
+                            撤销
+                        </a>
+                    </div>
+                    <div class="col-md-3 flex-vertical">
+                        {% if wish.wishes_count %}
+                            <a href="">
+{#                            <a href="{{ url_for('web.book_detail', isbn=wish.book.isbn) }}">#}
+                                <span class="bg-info">{{ wish.wishes_count }}人赠送</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_object.has_previous %}
+                <li>
+                    <a href="?page={{ page_object.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page_index in paginator.page_range %}
+
+                {% if page_index == page %}
+                     <li class="active"><a href="#">{{ page_index }}</a></li>
+                {% else %}
+                    <li><a href="?page={{ page_index }}">{{ page_index }}</a></li>
+                {% endif %}
+
+            {% endfor %}
+            {% if page_object.has_next %}
+                <li>
+                    <a href="?page={{ page_object.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+
+{% endblock %}
+{% block mycss %}
+{#    {{ super() }}#}
+    <script src="{%  static "js/util.js" %}"></script>
+{% endblock %}
